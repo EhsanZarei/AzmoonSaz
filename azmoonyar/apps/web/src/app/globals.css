@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== فونت Vazirmatn ===== */
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('/fonts/Vazirmatn-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('/fonts/Vazirmatn-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('/fonts/Vazirmatn-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('/fonts/Vazirmatn-ExtraBold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ===== متغیرهای CSS ===== */
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --primary: 248 100% 70%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 348 100% 70%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --border: 214.3 31.8% 91.4%;
+    --radius: 0.75rem;
+    --font-vazirmatn: 'Vazirmatn', Tahoma, sans-serif;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+  }
+}
+
+/* ===== تنظیمات RTL ===== */
+@layer base {
+  html {
+    direction: rtl;
+    font-family: var(--font-vazirmatn);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html[lang='en'] {
+    direction: ltr;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    line-height: 1.9;
+  }
+
+  /* فاصله خط مناسب برای فارسی */
+  p, li, td, th {
+    line-height: 1.9;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.5;
+    font-weight: 700;
+  }
+}
+
+/* ===== Scrollbar سفارشی ===== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-muted;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/40 rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary/60;
+}
+
+/* ===== کلاس‌های کمکی ===== */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* اعداد فارسی */
+  .nums-fa {
+    font-feature-settings: 'ss01';
+  }
+
+  /* انیمیشن fade */
+  .animate-in {
+    animation: fade-in 0.3s ease-out;
+  }
+}

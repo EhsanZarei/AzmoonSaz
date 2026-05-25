@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پروپوزال پروژه آزمونیار — پلتفرم آزمون‌ساز آنلاین فارسی</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+      --primary: #6C63FF;
+      --primary-light: #EEF0FF;
+      --secondary: #FF6584;
+      --success: #2ECC71;
+      --warning: #F39C12;
+      --danger: #E74C3C;
+      --dark: #1A1A2E;
+      --dark2: #16213E;
+      --gray: #6B7280;
+      --gray-light: #F3F4F6;
+      --border: #E5E7EB;
+      --white: #FFFFFF;
+      --shadow: 0 4px 24px rgba(108,99,255,0.10);
+      --shadow-lg: 0 8px 40px rgba(108,99,255,0.18);
+      --radius: 16px;
+      --radius-sm: 8px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+      background: #F8F9FF;
+      color: var(--dark);
+      line-height: 1.9;
+      font-size: 15px;
+    }
+
+    /* ===== NAVIGATION ===== */
+    .nav {
+      position: fixed;
+      top: 0; right: 0; left: 0;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .nav-brand .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 1.1rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--gray);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--primary); }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--dark) 0%, var(--dark2) 50%, #0F3460 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%; right: -20%;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(108,99,255,0.3) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%; left: -10%;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(255,101,132,0.2) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 900px; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(108,99,255,0.2);
+      border: 1px solid rgba(108,99,255,0.4);
+      color: #A5B4FC;
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      color: white;
+      line-height: 1.3;
+      margin-bottom: 1rem;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, #A5B4FC, #F9A8D4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.7);
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      margin-top: 3rem;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat .value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: white;
+      display: block;
+    }
+    .hero-stat .label {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 12px 28px;
+      border-radius: 50px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #8B5CF6);
+      color: white;
+      box-shadow: 0 4px 20px rgba(108,99,255,0.4);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(108,99,255,0.5); }
+    .btn-outline {
+      background: transparent;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+    .btn-outline:hover { background: rgba(255,255,255,0.1); }
+
+    /* ===== LAYOUT ===== */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+    .section { padding: 5rem 0; }
+    .section-alt { background: white; }
+
+    .section-header { text-align: center; margin-bottom: 3.5rem; }
+    .section-tag {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 4px 14px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 0.75rem;
+    }
+    .section-desc { color: var(--gray); max-width: 600px; margin: 0 auto; }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+
+    /* ===== SUMMARY CARDS ===== */
+    .summary-card {
+      background: linear-gradient(135deg, var(--primary), #8B5CF6);
+      color: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+    }
+    .summary-card .icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .summary-card .value { font-size: 1.8rem; font-weight: 800; }
+    .summary-card .label { font-size: 0.85rem; opacity: 0.8; margin-top: 0.25rem; }
+
+    /* ===== TABLE ===== */
+    .table-wrap { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow); }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th {
+      background: var(--primary);
+      color: white;
+      padding: 14px 18px;
+      text-align: right;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    td { padding: 12px 18px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--gray-light); }
+
+    /* ===== BADGES ===== */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-red { background: #FEE2E2; color: #DC2626; }
+    .badge-orange { background: #FEF3C7; color: #D97706; }
+    .badge-green { background: #D1FAE5; color: #059669; }
+    .badge-blue { background: #DBEAFE; color: #2563EB; }
+    .badge-purple { background: var(--primary-light); color: var(--primary); }
+
+    /* ===== FEATURE CARDS ===== */
+    .feature-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+    }
+    .feature-card:hover { border-color: var(--primary); box-shadow: var(--shadow); }
+    .feature-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .feature-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; }
+    .feature-desc { color: var(--gray); font-size: 0.875rem; line-height: 1.7; }
+
+    /* ===== TIMELINE ===== */
+    .timeline { position: relative; padding-right: 2rem; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--primary), var(--secondary));
+    }
+    .timeline-item { position: relative; margin-bottom: 2.5rem; }
+    .timeline-dot {
+      position: absolute;
+      right: -2.5rem;
+      top: 0.25rem;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 3px solid white;
+      box-shadow: 0 0 0 3px var(--primary);
+    }
+    .timeline-phase {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 3px 12px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .timeline-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; }
+    .timeline-items { list-style: none; }
+    .timeline-items li {
+      padding: 4px 0;
+      color: var(--gray);
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .timeline-items li::before { content: '✓'; color: var(--success); font-weight: 700; }
+
+    /* ===== PRICING ===== */
+    .pricing-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      border: 2px solid var(--border);
+      transition: all 0.3s;
+      position: relative;
+    }
+    .pricing-card.featured {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(108,99,255,0.1);
+    }
+    .pricing-badge {
+      position: absolute;
+      top: -12px;
+      right: 50%;
+      transform: translateX(50%);
+      background: var(--primary);
+      color: white;
+      padding: 3px 14px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .pricing-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; }
+    .pricing-price { font-size: 2rem; font-weight: 800; color: var(--primary); }
+    .pricing-period { font-size: 0.8rem; color: var(--gray); }
+    .pricing-features { list-style: none; margin-top: 1.5rem; }
+    .pricing-features li {
+      padding: 6px 0;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--gray-light);
+    }
+    .pricing-features li:last-child { border-bottom: none; }
+    .pricing-features li .check { color: var(--success); }
+    .pricing-features li .cross { color: #D1D5DB; }
+
+    /* ===== RISK ===== */
+    .risk-card {
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      border-right: 4px solid;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .risk-high { border-color: var(--danger); }
+    .risk-medium { border-color: var(--warning); }
+    .risk-low { border-color: var(--success); }
+
+    /* ===== KPI ===== */
+    .kpi-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-align: center;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .kpi-value { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+    .kpi-label { font-size: 0.8rem; color: var(--gray); margin-top: 0.25rem; }
+    .kpi-period { font-size: 0.7rem; color: #9CA3AF; }
+
+    /* ===== PROGRESS ===== */
+    .progress-bar {
+      background: var(--gray-light);
+      border-radius: 50px;
+      height: 8px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 50px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+
+    /* ===== TEAM ===== */
+    .team-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-align: center;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .team-avatar {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      margin: 0 auto 1rem;
+      color: white;
+    }
+    .team-role { font-size: 0.8rem; color: var(--gray); }
+    .team-salary { font-size: 0.85rem; color: var(--primary); font-weight: 600; margin-top: 0.5rem; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.85rem;
+    }
+    footer strong { color: white; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero-stats { gap: 1.5rem; }
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      .nav { display: none; }
+      .hero { min-height: auto; padding: 2rem; }
+      .section { padding: 2rem 0; }
+      .card:hover { transform: none; }
+    }
+
+    /* ===== SCROLL ===== */
+    html { scroll-behavior: smooth; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--gray-light); }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav">
+  <a href="#" class="nav-brand">
+    <div class="logo-icon">🎯</div>
+    آزمونیار
+  </a>
+  <ul class="nav-links">
+    <li><a href="#market">بازار</a></li>
+    <li><a href="#solution">راه‌حل</a></li>
+    <li><a href="#tech">فناوری</a></li>
+    <li><a href="#features">ویژگی‌ها</a></li>
+    <li><a href="#roadmap">نقشه راه</a></li>
+    <li><a href="#team">تیم</a></li>
+    <li><a href="#budget">بودجه</a></li>
+  </ul>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="top">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span>🚀</span>
+      <span>پروپوزال پروژه — فروردین ۱۴۰۵</span>
+    </div>
+    <h1>
+      پلتفرم <span>آزمون‌ساز آنلاین</span><br>فارسی نسل بعدی
+    </h1>
+    <p class="hero-subtitle">
+      اولین پلتفرم ایرانی با AI مکالمه‌ای، Confidence Mode، Spaced Repetition
+      و گواهینامه بلاکچین — بر اساس استانداردهای جهانی آوریل ۲۰۲۶
+    </p>
+    <div class="hero-buttons">
+      <a href="#solution" class="btn btn-primary">🎯 مشاهده راه‌حل</a>
+      <a href="#budget" class="btn btn-outline">💰 تحلیل مالی</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="value">۱۵M</span>
+        <span class="label">دانش‌آموز هدف</span>
+      </div>
+      <div class="hero-stat">
+        <span class="value">۵B</span>
+        <span class="label">سرمایه مورد نیاز (تومان)</span>
+      </div>
+      <div class="hero-stat">
+        <span class="value">۱۸ ماه</span>
+        <span class="label">تا Break-even</span>
+      </div>
+      <div class="hero-stat">
+        <span class="value">۶B</span>
+        <span class="label">ARR هدف سال دوم</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== EXECUTIVE SUMMARY ===== -->
+<section class="section section-alt" id="summary">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">خلاصه اجرایی</span>
+      <h2 class="section-title">یک نگاه به پروژه</h2>
+      <p class="section-desc">آزمونیار — پلتفرم SaaS آزمون‌ساز آنلاین فارسی با هوش مصنوعی بومی</p>
+    </div>
+    <div class="grid-4">
+      <div class="summary-card">
+        <div class="icon">🎯</div>
+        <div class="value">۱۰۰K</div>
+        <div class="label">کاربر فعال هدف در ۱۸ ماه</div>
+      </div>
+      <div class="summary-card" style="background: linear-gradient(135deg, #FF6584, #FF8E53);">
+        <div class="icon">💰</div>
+        <div class="value">۵۰۰M</div>
+        <div class="label">MRR هدف (تومان) — ماه ۱۸</div>
+      </div>
+      <div class="summary-card" style="background: linear-gradient(135deg, #2ECC71, #1ABC9C);">
+        <div class="icon">⚡</div>
+        <div class="value">۶۰s</div>
+        <div class="label">ساخت آزمون کامل با AI</div>
+      </div>
+      <div class="summary-card" style="background: linear-gradient(135deg, #F39C12, #E67E22);">
+        <div class="icon">🏆</div>
+        <div class="value">۴۱</div>
+        <div class="label">ماژول و ویژگی کلیدی</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 3rem;">
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="font-weight:700; margin-bottom:1rem; color:var(--danger);">❌ مشکل فعلی بازار</h3>
+          <ul style="list-style:none; display:flex; flex-direction:column; gap:0.75rem;">
+            <li style="display:flex; gap:10px; align-items:flex-start;">
+              <span style="color:var(--danger); font-size:1.2rem; margin-top:2px;">✗</span>
+              <span>هیچ پلتفرم ایرانی با AI مکالمه‌ای وجود ندارد</span>
+            </li>
+            <li style="display:flex; gap:10px; align-items:flex-start;">
+              <span style="color:var(--danger); font-size:1.2rem; margin-top:2px;">✗</span>
+              <span>ابزارهای خارجی بدون فارسی، بدون پرداخت ریالی</span>
+            </li>
+            <li style="display:flex; gap:10px; align-items:flex-start;">
+              <span style="color:var(--danger); font-size:1.2rem; margin-top:2px;">✗</span>
+              <span>تصحیح دستی ۳۰ برگه = ۳ ساعت وقت معلم</span>
+            </li>
+            <li style="display:flex; gap:10px; align-items:flex-start;">
+              <span style="color:var(--danger); font-size:1.2rem; margin-top:2px;">✗</span>
+              <span>نگرانی از تقلب در آزمون‌های آنلاین</span>
+            </li>
+            <li style="display:flex; gap:10px; align-items:flex-start;">
+              <span style="color:var(--danger); font-size:1.2rem; margin-top:2px;">✗</span>
+              <span>نبود گواهینامه دیجیتال قابل تأیید</span>
+            </li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 style="font-weight:700; margin-bottom:1rem; color:var(--success);">✅ راه‌حل آزمونیار</h3>
+          <ul style="list-style:none; display:flex; flex-direction:column; gap:0.75rem;">
+            <li style="display:flex; gap:10px; align-items:flex-start;">
+              <span style="color:var(--success); font-size:1.2rem; margin-top:2px;">✓</span>
+              <span>AI مکالمه‌ای فارسی — آزمون در ۶۰ ثانیه</span>
+            </li>
+            <li style="display:flex; gap:10px; align-items:flex-start;">
+              <span style="color:var(--success); font-size:1.2rem; margin-top:2px;">✓</span>
+              <span>رابط کاملاً فارسی RTL + درگاه ریالی</span>
+            </li>
+            <li style="display:flex; gap:10px; align-items:flex-start;">
+              <span style="color:var(--success); font-size:1.2rem; margin-top:2px;">✓</span>
+              <span>نمره‌دهی خودکار + AI Grading تشریحی</span>
+            </li>
+            <li style="display:flex; gap:10px; align-items:flex-start;">
+              <span style="color:var(--success); font-size:1.2rem; margin-top:2px;">✓</span>
+              <span>AI Proctoring بدون نرم‌افزار جانبی</span>
+            </li>
+            <li style="display:flex; gap:10px; align-items:flex-start;">
+              <span style="color:var(--success); font-size:1.2rem; margin-top:2px;">✓</span>
+              <span>گواهینامه بلاکچین با استاندارد W3C VC</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MARKET ===== -->
+<section class="section" id="market">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">تحلیل بازار</span>
+      <h2 class="section-title">فرصت بازار</h2>
+      <p class="section-desc">بازار آموزش آنلاین ایران با رشد ۳۵٪ سالانه در اوج فرصت است</p>
+    </div>
+
+    <div class="grid-3" style="margin-bottom:2.5rem;">
+      <div class="card" style="text-align:center; border-top: 4px solid var(--primary);">
+        <div style="font-size:2.5rem; margin-bottom:0.5rem;">🎯</div>
+        <div style="font-size:2rem; font-weight:800; color:var(--primary);">۵۰۰B</div>
+        <div style="font-weight:600; margin:0.25rem 0;">SAM</div>
+        <div style="color:var(--gray); font-size:0.85rem;">بازار قابل دسترس (تومان/سال)</div>
+      </div>
+      <div class="card" style="text-align:center; border-top: 4px solid var(--secondary);">
+        <div style="font-size:2.5rem; margin-bottom:0.5rem;">📈</div>
+        <div style="font-size:2rem; font-weight:800; color:var(--secondary);">۳۵٪</div>
+        <div style="font-weight:600; margin:0.25rem 0;">رشد سالانه</div>
+        <div style="color:var(--gray); font-size:0.85rem;">EdTech ایران پس از کرونا</div>
+      </div>
+      <div class="card" style="text-align:center; border-top: 4px solid var(--success);">
+        <div style="font-size:2.5rem; margin-bottom:0.5rem;">🏆</div>
+        <div style="font-size:2rem; font-weight:800; color:var(--success);">۵۰B</div>
+        <div style="font-weight:600; margin:0.25rem 0;">SOM هدف</div>
+        <div style="color:var(--gray); font-size:0.85rem;">۱۰٪ SAM در ۳ سال</div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>بخش بازار</th>
+            <th>اندازه</th>
+            <th>ARPU/ماه</th>
+            <th>اولویت</th>
+            <th>درد اصلی</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>معلمان و مدرسان فردی</strong></td>
+            <td>۱.۲M نفر</td>
+            <td>۱۵۰K تومان</td>
+            <td><span class="badge badge-red">🔴 اول</span></td>
+            <td>تصحیح دستی، تقلب</td>
+          </tr>
+          <tr>
+            <td><strong>آموزشگاه‌ها</strong></td>
+            <td>۱۰,۰۰۰+</td>
+            <td>۵۰۰K تومان</td>
+            <td><span class="badge badge-red">🔴 اول</span></td>
+            <td>مدیریت چند کلاس</td>
+          </tr>
+          <tr>
+            <td><strong>دانش‌آموزان</strong></td>
+            <td>۱۵M نفر</td>
+            <td>۵۰K تومان</td>
+            <td><span class="badge badge-orange">🟠 دوم</span></td>
+            <td>نبود محتوای تمرینی</td>
+          </tr>
+          <tr>
+            <td><strong>شرکت‌ها (HR)</strong></td>
+            <td>۵۰,۰۰۰+</td>
+            <td>۲M تومان</td>
+            <td><span class="badge badge-orange">🟠 دوم</span></td>
+            <td>آزمون استخدامی ناامن</td>
+          </tr>
+          <tr>
+            <td><strong>دانشگاه‌ها</strong></td>
+            <td>۱۰۰+</td>
+            <td>۱۰M تومان</td>
+            <td><span class="badge badge-blue">🟡 سوم</span></td>
+            <td>مقیاس بزرگ، امنیت</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COMPETITORS ===== -->
+<section class="section section-alt" id="competitors">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">تحلیل رقبا</span>
+      <h2 class="section-title">جایگاه رقابتی</h2>
+      <p class="section-desc">ما در تقاطع AI قوی و بومی‌سازی کامل قرار داریم</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>رقیب</th>
+            <th>AI مکالمه‌ای</th>
+            <th>فارسی RTL</th>
+            <th>پرداخت ریالی</th>
+            <th>گیمیفیکیشن</th>
+            <th>Proctoring</th>
+            <th>قیمت</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="background: linear-gradient(90deg, rgba(108,99,255,0.05), transparent);">
+            <td><strong style="color:var(--primary);">🎯 آزمونیار (ما)</strong></td>
+            <td>✅ کامل</td>
+            <td>✅ بومی</td>
+            <td>✅ ریالی</td>
+            <td>✅ کامل</td>
+            <td>✅ AI</td>
+            <td style="color:var(--success);">۱۹۹K–۲M تومان</td>
+          </tr>
+          <tr>
+            <td><strong>پرس‌لاین</strong></td>
+            <td>❌</td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>€۲۳/ماه</td>
+          </tr>
+          <tr>
+            <td><strong>Jotform</strong></td>
+            <td>✅ (مارس ۲۰۲۶)</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>محدود</td>
+            <td>❌</td>
+            <td>$۳۴–۹۹/ماه</td>
+          </tr>
+          <tr>
+            <td><strong>Typeform</strong></td>
+            <td>✅ جزئی</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>$۲۹–۹۹/ماه</td>
+          </tr>
+          <tr>
+            <td><strong>Kahoot</strong></td>
+            <td>✅ جزئی</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>✅ عالی</td>
+            <td>❌</td>
+            <td>$۱۹/host</td>
+          </tr>
+          <tr>
+            <td><strong>FlexiQuiz</strong></td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>✅</td>
+            <td>$۲۵–۸۹/ماه</td>
+          </tr>
+          <tr>
+            <td><strong>Google Forms</strong></td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>❌</td>
+            <td>رایگان</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SOLUTION ===== -->
+<section class="section" id="solution">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">راه‌حل پیشنهادی</span>
+      <h2 class="section-title">آزمونیار چیست؟</h2>
+      <p class="section-desc">یک پلتفرم SaaS کامل که بهترین ویژگی‌های جهانی را با بومی‌سازی کامل ترکیب می‌کند</p>
+    </div>
+
+    <!-- Three Layers -->
+    <div style="background: linear-gradient(135deg, var(--dark), var(--dark2)); border-radius: var(--radius); padding: 2.5rem; margin-bottom: 3rem; color: white;">
+      <h3 style="text-align:center; margin-bottom:2rem; font-size:1.2rem; opacity:0.8;">معماری سه‌لایه محصول</h3>
+      <div class="grid-3">
+        <div style="background:rgba(108,99,255,0.2); border:1px solid rgba(108,99,255,0.4); border-radius:12px; padding:1.5rem; text-align:center;">
+          <div style="font-size:2rem; margin-bottom:0.75rem;">🛠️</div>
+          <div style="font-weight:700; margin-bottom:0.5rem;">لایه ۱: ساخت</div>
+          <div style="font-size:0.8rem; opacity:0.7; line-height:1.8;">AI مکالمه‌ای · ویرایشگر بصری · بانک سوال · ۲۳ نوع سوال · قالب‌های آماده</div>
+        </div>
+        <div style="background:rgba(255,101,132,0.2); border:1px solid rgba(255,101,132,0.4); border-radius:12px; padding:1.5rem; text-align:center;">
+          <div style="font-size:2rem; margin-bottom:0.75rem;">🎮</div>
+          <div style="font-weight:700; margin-bottom:0.5rem;">لایه ۲: برگزاری</div>
+          <div style="font-size:0.8rem; opacity:0.7; line-height:1.8;">آزمون زنده · آنلاین · خودآزمایی · تطبیقی · Proctoring · Confidence Mode</div>
+        </div>
+        <div style="background:rgba(46,204,113,0.2); border:1px solid rgba(46,204,113,0.4); border-radius:12px; padding:1.5rem; text-align:center;">
+          <div style="font-size:2rem; margin-bottom:0.75rem;">📊</div>
+          <div style="font-weight:700; margin-bottom:0.5rem;">لایه ۳: یادگیری</div>
+          <div style="font-size:0.8rem; opacity:0.7; line-height:1.8;">گزارش‌دهی · Spaced Repetition · Agentic AI · گواهینامه بلاکچین</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Flows -->
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="font-weight:700; margin-bottom:1.5rem; display:flex; align-items:center; gap:8px;">
+          <span style="background:var(--primary-light); color:var(--primary); padding:4px 10px; border-radius:8px; font-size:0.85rem;">مدرس</span>
+          جریان کاربری
+        </h3>
+        <div style="display:flex; flex-direction:column; gap:0;">
+          <div style="display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px dashed var(--border);">
+            <span style="background:var(--primary); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0;">۱</span>
+            <div><strong>ثبت‌نام</strong> — ۳۰ ثانیه با موبایل</div>
+          </div>
+          <div style="display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px dashed var(--border);">
+            <span style="background:var(--primary); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0;">۲</span>
+            <div><strong>گفتگو با AI:</strong> «یه آزمون ۲۰ سوالی از فصل ۳ شیمی بساز»</div>
+          </div>
+          <div style="display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px dashed var(--border);">
+            <span style="background:var(--primary); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0;">۳</span>
+            <div><strong>آزمون آماده</strong> در ۶۰ ثانیه — ویرایش دلخواه</div>
+          </div>
+          <div style="display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px dashed var(--border);">
+            <span style="background:var(--primary); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0;">۴</span>
+            <div><strong>انتشار</strong> — لینک / QR / پیامک</div>
+          </div>
+          <div style="display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px dashed var(--border);">
+            <span style="background:var(--primary); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0;">۵</span>
+            <div><strong>برگزاری</strong> — مشاهده زنده پیشرفت</div>
+          </div>
+          <div style="display:flex; gap:12px; align-items:flex-start; padding:10px 0;">
+            <span style="background:var(--success); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0;">✓</span>
+            <div><strong>گزارش خودکار</strong> + گواهینامه برای قبول‌شدگان</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="font-weight:700; margin-bottom:1.5rem; display:flex; align-items:center; gap:8px;">
+          <span style="background:#D1FAE5; color:#059669; padding:4px 10px; border-radius:8px; font-size:0.85rem;">دانش‌آموز</span>
+          جریان کاربری
+        </h3>
+        <div style="display:flex; flex-direction:column; gap:0;">
+          <div style="display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px dashed var(--border);">
+            <span style="background:var(--success); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0;">۱</span>
+            <div><strong>دریافت لینک</strong> از معلم</div>
+          </div>
+          <div style="display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px dashed var(--border);">
+            <span style="background:var(--success); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0;">۲</span>
+            <div><strong>ورود</strong> — بدون ثبت‌نام اجباری</div>
+          </div>
+          <div style="display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px dashed var(--border);">
+            <span style="background:var(--success); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0;">۳</span>
+            <div><strong>شرکت در آزمون</strong> با Confidence Mode</div>
+          </div>
+          <div style="display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px dashed var(--border);">
+            <span style="background:var(--success); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0;">۴</span>
+            <div><strong>نتیجه فوری</strong> + بازخورد AI</div>
+          </div>
+          <div style="display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px dashed var(--border);">
+            <span style="background:var(--success); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0;">۵</span>
+            <div><strong>گواهینامه بلاکچین</strong> در صورت قبولی</div>
+          </div>
+          <div style="display:flex; gap:12px; align-items:flex-start; padding:10px 0;">
+            <span style="background:var(--warning); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; flex-shrink:0;">∞</span>
+            <div><strong>Spaced Repetition</strong> — یادگیری مستمر</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section class="section section-alt" id="features">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">ویژگی‌های کلیدی</span>
+      <h2 class="section-title">چرا آزمونیار؟</h2>
+      <p class="section-desc">۱۱ ویژگی تمایزدهنده بر اساس استانداردهای جهانی آوریل ۲۰۲۶</p>
+    </div>
+    <div class="grid-3">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#EEF0FF;">🤖</div>
+        <div class="feature-title">AI مکالمه‌ای فارسی</div>
+        <div class="feature-desc">ساخت آزمون کامل از طریق گفتگوی فارسی با AI. «یه آزمون ۱۵ سوالی از فصل ۳ بساز» — آماده در ۶۰ ثانیه.</div>
+        <div style="margin-top:0.75rem;"><span class="badge badge-red">فاز ۲</span> <span class="badge badge-purple">استاندارد ۲۰۲۶</span></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#FFF0F3;">🎯</div>
+        <div class="feature-title">Confidence Mode</div>
+        <div class="feature-desc">دانش‌آموز سطح اطمینان خود را اعلام می‌کند. اندازه‌گیری metacognition — ابزار آموزشی بی‌سابقه در ایران.</div>
+        <div style="margin-top:0.75rem;"><span class="badge badge-red">فاز ۲</span> <span class="badge badge-orange">Kahoot 2026</span></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#F0FFF4;">🧠</div>
+        <div class="feature-title">Spaced Repetition</div>
+        <div class="feature-desc">الگوریتم تکرار فاصله‌دار با LLM فارسی. ۲۰–۴۰٪ بهبود نگهداری دانش. مناسب برای کنکور.</div>
+        <div style="margin-top:0.75rem;"><span class="badge badge-blue">فاز ۳</span></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#FFF7ED;">🎨</div>
+        <div class="feature-title">AI Image Generation</div>
+        <div class="feature-desc">تولید تصویر مرتبط با سوال با یک کلیک. دیاگرام علمی، نقشه، نمودار — بدون نیاز به طراح.</div>
+        <div style="margin-top:0.75rem;"><span class="badge badge-red">فاز ۲</span></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#EFF6FF;">🔒</div>
+        <div class="feature-title">AI Proctoring</div>
+        <div class="feature-desc">۵ سطح نظارت از Browser Lockdown تا تشخیص چهره با AI. بدون نرم‌افزار جانبی.</div>
+        <div style="margin-top:0.75rem;"><span class="badge badge-blue">فاز ۳</span></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#F5F3FF;">🏆</div>
+        <div class="feature-title">گواهینامه بلاکچین</div>
+        <div class="feature-desc">استاندارد W3C Verifiable Credentials. قابل تأیید توسط کارفرماها. اشتراک‌گذاری در LinkedIn.</div>
+        <div style="margin-top:0.75rem;"><span class="badge badge-blue">فاز ۳</span> <span class="badge badge-purple">W3C VC</span></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#FFF0F3;">🎮</div>
+        <div class="feature-title">آزمون زنده (Live Quiz)</div>
+        <div class="feature-desc">کد اتاق ۶ رقمی، لیدربورد زنده، انیمیشن و موسیقی. مثل Kahoot اما فارسی و کامل‌تر.</div>
+        <div style="margin-top:0.75rem;"><span class="badge badge-red">فاز ۲</span></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#F0FFF4;">🔄</div>
+        <div class="feature-title">AI Workflow Automation</div>
+        <div class="feature-desc">اتوماسیون گردش‌کار بدون کد. ارسال خودکار گواهینامه، یادآوری، گزارش به تلگرام.</div>
+        <div style="margin-top:0.75rem;"><span class="badge badge-red">فاز ۲</span> <span class="badge badge-orange">Typeform 2026</span></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#FFF7ED;">🎤</div>
+        <div class="feature-title">ارزیابی صوتی</div>
+        <div class="feature-desc">آزمون شفاهی با AI. Speech-to-Text فارسی. مناسب برای آزمون‌های زبان و مصاحبه.</div>
+        <div style="margin-top:0.75rem;"><span class="badge badge-blue">فاز ۳</span></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#EEF0FF;">🤖</div>
+        <div class="feature-title">Agentic AI</div>
+        <div class="feature-desc">AI خودمختار که مسیر یادگیری را مدیریت می‌کند. یادآوری، تحلیل ضعف، پیشنهاد مطالعه.</div>
+        <div style="margin-top:0.75rem;"><span class="badge badge-purple">فاز ۴</span></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#F5F3FF;">📱</div>
+        <div class="feature-title">موبایل‌فرست فارسی</div>
+        <div class="feature-desc">طراحی از ابتدا برای موبایل ایرانی. RTL بومی، فونت Vazirmatn، تقویم شمسی، پرداخت ریالی.</div>
+        <div style="margin-top:0.75rem;"><span class="badge badge-red">فاز ۱</span></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:#FFF0F3;">📊</div>
+        <div class="feature-title">تحلیل پیشرفته</div>
+        <div class="feature-desc">Item Analysis، Knowledge Map، Bias Detection، AI Explainability. گزارش Excel/PDF خودکار.</div>
+        <div style="margin-top:0.75rem;"><span class="badge badge-blue">فاز ۳</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TECH ===== -->
+<section class="section" id="tech">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">معماری فنی</span>
+      <h2 class="section-title">Stack فناوری</h2>
+      <p class="section-desc">انتخاب‌های فنی بر اساس مقیاس‌پذیری، سرعت توسعه و سازگاری با ایران</p>
+    </div>
+    <div class="grid-2" style="margin-bottom:2.5rem;">
+      <div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>لایه</th><th>فناوری</th><th>دلیل</th></tr></thead>
+            <tbody>
+              <tr><td>Frontend</td><td><strong>Next.js 15 + TypeScript</strong></td><td>SSR، SEO، عملکرد</td></tr>
+              <tr><td>UI</td><td><strong>Shadcn/UI + Tailwind</strong></td><td>RTL، سفارشی‌سازی</td></tr>
+              <tr><td>Backend</td><td><strong>NestJS (Node.js)</strong></td><td>TypeScript، ماژولار</td></tr>
+              <tr><td>AI Service</td><td><strong>FastAPI (Python)</strong></td><td>LLM integration</td></tr>
+              <tr><td>Database</td><td><strong>PostgreSQL 16</strong></td><td>ACID، JSON، قابل اعتماد</td></tr>
+              <tr><td>Cache</td><td><strong>Redis 7</strong></td><td>Session، Queue، Real-time</td></tr>
+              <tr><td>Queue</td><td><strong>BullMQ</strong></td><td>پردازش AI، ایمیل</td></tr>
+              <tr><td>Real-time</td><td><strong>Socket.io</strong></td><td>آزمون زنده</td></tr>
+              <tr><td>Storage</td><td><strong>MinIO / S3</strong></td><td>فایل‌ها، بومی</td></tr>
+              <tr><td>Search</td><td><strong>Elasticsearch</strong></td><td>جستجوی فارسی</td></tr>
+              <tr><td>AI/LLM</td><td><strong>GPT-4o / Gemini</strong></td><td>تولید سوال</td></tr>
+              <tr><td>CDN</td><td><strong>ArvanCloud</strong></td><td>سرعت در ایران</td></tr>
+              <tr><td>Container</td><td><strong>Docker + K8s</strong></td><td>استقرار، مقیاس</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="height:100%; background: var(--dark); color:white; font-family: monospace; font-size:0.8rem; line-height:1.8;">
+          <div style="color:#A5B4FC; margin-bottom:1rem; font-family:'Vazirmatn',sans-serif; font-size:0.9rem;">دیاگرام معماری</div>
+          <pre style="white-space:pre-wrap; color:#E2E8F0;">
+┌─────────────────────────┐
+│   Next.js PWA (کاربر)   │
+└──────────┬──────────────┘
+           │
+┌──────────▼──────────────┐
+│  ArvanCloud CDN          │
+└──────────┬──────────────┘
+           │
+┌──────────▼──────────────┐
+│  API Gateway             │
+│  Rate Limit · Auth       │
+└──┬───────┬──────┬───────┘
+   │       │      │
+┌──▼──┐ ┌──▼──┐ ┌─▼────┐
+│Auth │ │Quiz │ │ AI   │
+│Svc  │ │Svc  │ │ Svc  │
+└──┬──┘ └──┬──┘ └─┬────┘
+   │       │      │
+┌──▼───────▼──────▼──────┐
+│  PostgreSQL · Redis     │
+│  MinIO · Elasticsearch  │
+└────────────────────────┘</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security -->
+    <div class="grid-4">
+      <div class="card" style="text-align:center; border-top:3px solid var(--primary);">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">🔐</div>
+        <div style="font-weight:700; margin-bottom:0.25rem;">TLS 1.3</div>
+        <div style="color:var(--gray); font-size:0.8rem;">رمزنگاری انتقال</div>
+      </div>
+      <div class="card" style="text-align:center; border-top:3px solid var(--success);">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">🛡️</div>
+        <div style="font-weight:700; margin-bottom:0.25rem;">OWASP Top 10</div>
+        <div style="color:var(--gray); font-size:0.8rem;">تست نفوذ</div>
+      </div>
+      <div class="card" style="text-align:center; border-top:3px solid var(--warning);">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">⚡</div>
+        <div style="font-weight:700; margin-bottom:0.25rem;">99.9% Uptime</div>
+        <div style="color:var(--gray); font-size:0.8rem;">SLA تضمین‌شده</div>
+      </div>
+      <div class="card" style="text-align:center; border-top:3px solid var(--secondary);">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">📱</div>
+        <div style="font-weight:700; margin-bottom:0.25rem;">WCAG 2.2 AA</div>
+        <div style="color:var(--gray); font-size:0.8rem;">دسترس‌پذیری</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ROADMAP ===== -->
+<section class="section section-alt" id="roadmap">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">نقشه راه</span>
+      <h2 class="section-title">برنامه اجرایی ۱۸ ماهه</h2>
+      <p class="section-desc">۴ فاز توسعه با اهداف مشخص و قابل اندازه‌گیری</p>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <span class="timeline-phase">فاز ۰ — هفته ۱ تا ۴</span>
+        <div class="timeline-title">آماده‌سازی زیرساخت</div>
+        <ul class="timeline-items">
+          <li>تشکیل تیم هسته (۵ نفر)</li>
+          <li>طراحی دیتابیس و ERD</li>
+          <li>راه‌اندازی CI/CD Pipeline</li>
+          <li>طراحی Design System فارسی</li>
+          <li>تعریف API Contract</li>
+        </ul>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:var(--success); box-shadow:0 0 0 3px var(--success);"></div>
+        <span class="timeline-phase" style="background:#D1FAE5; color:#059669;">فاز ۱ — ماه ۱ تا ۳</span>
+        <div class="timeline-title">MVP — اولین نسخه قابل استفاده</div>
+        <ul class="timeline-items">
+          <li>احراز هویت موبایل OTP</li>
+          <li>ساخت آزمون (۸ نوع سوال)</li>
+          <li>نمره‌دهی خودکار</li>
+          <li>درگاه پرداخت زرین‌پال</li>
+          <li>رابط فارسی RTL کامل</li>
+          <li>🚀 راه‌اندازی Beta با ۱۰۰ کاربر</li>
+        </ul>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:var(--warning); box-shadow:0 0 0 3px var(--warning);"></div>
+        <span class="timeline-phase" style="background:#FEF3C7; color:#D97706;">فاز ۲ — ماه ۴ تا ۶</span>
+        <div class="timeline-title">رشد — ویژگی‌های تمایزدهنده</div>
+        <ul class="timeline-items">
+          <li>AI مکالمه‌ای (Chat-to-Quiz)</li>
+          <li>AI سوال‌ساز از PDF/تصویر</li>
+          <li>AI Image Generation</li>
+          <li>Confidence Mode + آزمون زنده</li>
+          <li>گواهینامه دیجیتال</li>
+          <li>🚀 راه‌اندازی عمومی</li>
+        </ul>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:var(--secondary); box-shadow:0 0 0 3px var(--secondary);"></div>
+        <span class="timeline-phase" style="background:#FFF0F3; color:#FF6584;">فاز ۳ — ماه ۷ تا ۱۲</span>
+        <div class="timeline-title">بلوغ — پوشش سازمانی</div>
+        <ul class="timeline-items">
+          <li>Spaced Repetition + Knowledge Map</li>
+          <li>White-label + SSO</li>
+          <li>AI Proctoring (دوربین)</li>
+          <li>Blockchain Certificate</li>
+          <li>Voice Assessment</li>
+          <li>API عمومی + SDK</li>
+        </ul>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:#8B5CF6; box-shadow:0 0 0 3px #8B5CF6;"></div>
+        <span class="timeline-phase" style="background:#F5F3FF; color:#7C3AED;">فاز ۴ — ماه ۱۳ تا ۱۸</span>
+        <div class="timeline-title">توسعه — گسترش بازار</div>
+        <ul class="timeline-items">
+          <li>اپ موبایل Native</li>
+          <li>Agentic AI کامل</li>
+          <li>نسخه بین‌المللی (انگلیسی)</li>
+          <li>On-Premise سازمانی</li>
+          <li>Digital Wallet + Portfolio</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRICING ===== -->
+<section class="section" id="pricing">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">قیمت‌گذاری</span>
+      <h2 class="section-title">پلن‌های اشتراک</h2>
+      <p class="section-desc">تخفیف ۲۵٪ برای پرداخت سالانه</p>
+    </div>
+    <div class="grid-4">
+      <div class="pricing-card">
+        <div class="pricing-name">🆓 رایگان</div>
+        <div class="pricing-price">۰</div>
+        <div class="pricing-period">تومان / ماه</div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> ۳ آزمون فعال</li>
+          <li><span class="check">✓</span> ۱۰۰ پاسخ/ماه</li>
+          <li><span class="check">✓</span> ۸ نوع سوال</li>
+          <li><span class="check">✓</span> ۵۰ سوال AI/ماه</li>
+          <li><span class="cross">✗</span> گواهینامه</li>
+          <li><span class="cross">✗</span> API</li>
+        </ul>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-name">💼 پایه</div>
+        <div class="pricing-price">۱۹۹K</div>
+        <div class="pricing-period">تومان / ماه</div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> ۲۰ آزمون فعال</li>
+          <li><span class="check">✓</span> ۵۰۰ پاسخ/ماه</li>
+          <li><span class="check">✓</span> همه ۲۳ نوع سوال</li>
+          <li><span class="check">✓</span> ۵۰۰ سوال AI/ماه</li>
+          <li><span class="check">✓</span> گواهینامه (۳ قالب)</li>
+          <li><span class="cross">✗</span> API</li>
+        </ul>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">محبوب‌ترین</div>
+        <div class="pricing-name">🚀 حرفه‌ای</div>
+        <div class="pricing-price">۴۹۹K</div>
+        <div class="pricing-period">تومان / ماه</div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> آزمون نامحدود</li>
+          <li><span class="check">✓</span> ۵,۰۰۰ پاسخ/ماه</li>
+          <li><span class="check">✓</span> AI مکالمه‌ای</li>
+          <li><span class="check">✓</span> ۵,۰۰۰ سوال AI/ماه</li>
+          <li><span class="check">✓</span> گواهینامه نامحدود</li>
+          <li><span class="check">✓</span> API محدود</li>
+        </ul>
+      </div>
+      <div class="pricing-card" style="border-color:var(--dark); background:var(--dark); color:white;">
+        <div class="pricing-name" style="color:white;">🏢 سازمانی</div>
+        <div class="pricing-price" style="color:#A5B4FC;">۲M+</div>
+        <div class="pricing-period" style="color:rgba(255,255,255,0.5);">تومان / ماه</div>
+        <ul class="pricing-features">
+          <li style="border-color:rgba(255,255,255,0.1);"><span class="check">✓</span> همه چیز نامحدود</li>
+          <li style="border-color:rgba(255,255,255,0.1);"><span class="check">✓</span> White-label</li>
+          <li style="border-color:rgba(255,255,255,0.1);"><span class="check">✓</span> SSO (SAML)</li>
+          <li style="border-color:rgba(255,255,255,0.1);"><span class="check">✓</span> API نامحدود</li>
+          <li style="border-color:rgba(255,255,255,0.1);"><span class="check">✓</span> SLA 99.9%</span></li>
+          <li style="border-color:rgba(255,255,255,0.1);"><span class="check">✓</span> پشتیبانی اختصاصی</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TEAM ===== -->
+<section class="section section-alt" id="team">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">تیم</span>
+      <h2 class="section-title">تیم اجرایی</h2>
+      <p class="section-desc">۱۰ نفر در فاز اول — رشد به ۲۵ نفر در ۱۸ ماه</p>
+    </div>
+    <div class="grid-4" style="margin-bottom:2rem;">
+      <div class="team-card">
+        <div class="team-avatar">👨‍💼</div>
+        <div style="font-weight:700;">مدیر محصول</div>
+        <div class="team-role">CPO — EdTech + Agile</div>
+        <div class="team-salary">۷۰M تومان/ماه</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">🏗️</div>
+        <div style="font-weight:700;">معمار ارشد</div>
+        <div class="team-role">Node.js · PostgreSQL · K8s</div>
+        <div class="team-salary">۸۰M تومان/ماه</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">⚛️</div>
+        <div style="font-weight:700;">Frontend Senior</div>
+        <div class="team-role">Next.js · TypeScript · RTL</div>
+        <div class="team-salary">۶۰M تومان/ماه</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">⚛️</div>
+        <div style="font-weight:700;">Frontend Mid</div>
+        <div class="team-role">React · Tailwind · PWA</div>
+        <div class="team-salary">۴۰M تومان/ماه</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">⚙️</div>
+        <div style="font-weight:700;">Backend Senior</div>
+        <div class="team-role">NestJS · PostgreSQL · Redis</div>
+        <div class="team-salary">۶۰M تومان/ماه</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">🤖</div>
+        <div style="font-weight:700;">AI Engineer</div>
+        <div class="team-role">Python · LLM · FastAPI</div>
+        <div class="team-salary">۷۰M تومان/ماه</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">🚀</div>
+        <div style="font-weight:700;">DevOps / SRE</div>
+        <div class="team-role">Docker · K8s · CI/CD</div>
+        <div class="team-salary">۵۵M تومان/ماه</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">🎨</div>
+        <div style="font-weight:700;">UI/UX Designer</div>
+        <div class="team-role">Figma · RTL Design</div>
+        <div class="team-salary">۴۵M تومان/ماه</div>
+      </div>
+    </div>
+    <div class="card" style="background:var(--primary-light); border-color:var(--primary);">
+      <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem; align-items:center;">
+        <div><strong>جمع حقوق تیم اولیه (۱۰ نفر):</strong></div>
+        <div style="font-size:1.5rem; font-weight:800; color:var(--primary);">۵۵۵M تومان/ماه</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BUDGET ===== -->
+<section class="section" id="budget">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">بودجه</span>
+      <h2 class="section-title">تحلیل مالی</h2>
+      <p class="section-desc">سرمایه‌گذاری ۵ میلیارد تومان — بازگشت در ۱۸ ماه</p>
+    </div>
+    <div class="grid-3" style="margin-bottom:2.5rem;">
+      <div class="kpi-card">
+        <div class="kpi-value">۵B</div>
+        <div class="kpi-label">سرمایه مورد نیاز (تومان)</div>
+        <div class="kpi-period">برای ۱۲ ماه اول</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value">ماه ۱۳</div>
+        <div class="kpi-label">Break-even تخمینی</div>
+        <div class="kpi-period">سناریو واقع‌بینانه</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value">۶B</div>
+        <div class="kpi-label">ARR هدف سال دوم (تومان)</div>
+        <div class="kpi-period">۱۰,۰۰۰ کاربر پولی</div>
+      </div>
+    </div>
+
+    <div class="table-wrap" style="margin-bottom:2rem;">
+      <table>
+        <thead>
+          <tr>
+            <th>دسته هزینه</th>
+            <th>ماه ۱–۳</th>
+            <th>ماه ۴–۶</th>
+            <th>ماه ۷–۱۲</th>
+            <th>ماه ۱۳–۱۸</th>
+            <th>جمع کل</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>حقوق تیم</strong></td>
+            <td>۱.۲B</td><td>۱.۵B</td><td>۳.۳B</td><td>۴.۵B</td>
+            <td><strong>۱۰.۵B</strong></td>
+          </tr>
+          <tr>
+            <td><strong>زیرساخت</strong></td>
+            <td>۱۵۰M</td><td>۳۰۰M</td><td>۹۰۰M</td><td>۱.۵B</td>
+            <td><strong>۲.۸۵B</strong></td>
+          </tr>
+          <tr>
+            <td><strong>AI API</strong></td>
+            <td>۵۰M</td><td>۲۰۰M</td><td>۶۰۰M</td><td>۱B</td>
+            <td><strong>۱.۸۵B</strong></td>
+          </tr>
+          <tr>
+            <td><strong>بازاریابی</strong></td>
+            <td>۱۰۰M</td><td>۵۰۰M</td><td>۱.۵B</td><td>۲B</td>
+            <td><strong>۴.۱B</strong></td>
+          </tr>
+          <tr>
+            <td><strong>حقوقی + اداری</strong></td>
+            <td>۵۰M</td><td>۵۰M</td><td>۱۵۰M</td><td>۲۰۰M</td>
+            <td><strong>۴۵۰M</strong></td>
+          </tr>
+          <tr style="background:var(--primary-light);">
+            <td><strong>جمع</strong></td>
+            <td><strong>۱.۷B</strong></td>
+            <td><strong>۲.۸B</strong></td>
+            <td><strong>۷.۱B</strong></td>
+            <td><strong>۱۰.۱B</strong></td>
+            <td><strong style="color:var(--primary);">۲۱.۷B</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Revenue Forecast -->
+    <h3 style="font-weight:700; margin-bottom:1.5rem;">پیش‌بینی درآمد</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>ماه</th><th>کاربر ثبت‌نامی</th><th>کاربر پولی</th><th>MRR</th><th>وضعیت</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>۳</td><td>۱,۰۰۰</td><td>۵۰</td><td>۵M تومان</td><td><span class="badge badge-orange">Beta</span></td></tr>
+          <tr><td>۶</td><td>۱۰,۰۰۰</td><td>۵۰۰</td><td>۵۰M تومان</td><td><span class="badge badge-blue">Launch</span></td></tr>
+          <tr><td>۱۲</td><td>۵۰,۰۰۰</td><td>۲,۰۰۰</td><td>۲۰۰M تومان</td><td><span class="badge badge-green">رشد</span></td></tr>
+          <tr><td>۱۸</td><td>۱۰۰,۰۰۰</td><td>۵,۰۰۰</td><td>۵۰۰M تومان</td><td><span class="badge badge-green">Break-even</span></td></tr>
+          <tr><td>۲۴</td><td>۲۰۰,۰۰۰</td><td>۱۰,۰۰۰</td><td>۱B تومان</td><td><span class="badge badge-purple">سودآور</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RISK ===== -->
+<section class="section section-alt" id="risk">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">تحلیل ریسک</span>
+      <h2 class="section-title">ریسک‌ها و راهکارها</h2>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:1rem;">
+      <div class="risk-card risk-high">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+          <strong>قطعی اینترنت</strong>
+          <span class="badge badge-red">ریسک بالا</span>
+        </div>
+        <div style="color:var(--gray); font-size:0.875rem;">راهکار: Offline Mode در مرورگر + CDN داخلی ArvanCloud + سرور در ایران</div>
+      </div>
+      <div class="risk-card risk-high">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+          <strong>تحریم API های AI</strong>
+          <span class="badge badge-red">ریسک بالا</span>
+        </div>
+        <div style="color:var(--gray); font-size:0.875rem;">راهکار: چند ارائه‌دهنده (OpenAI + Gemini) + آموزش مدل بومی فارسی + Fallback خودکار</div>
+      </div>
+      <div class="risk-card risk-medium">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+          <strong>نرخ ارز</strong>
+          <span class="badge badge-orange">ریسک متوسط</span>
+        </div>
+        <div style="color:var(--gray); font-size:0.875rem;">راهکار: قیمت‌گذاری کامل به تومان + ذخیره ارزی برای هزینه‌های خارجی</div>
+      </div>
+      <div class="risk-card risk-medium">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+          <strong>کمبود نیروی متخصص</strong>
+          <span class="badge badge-orange">ریسک متوسط</span>
+        </div>
+        <div style="color:var(--gray); font-size:0.875rem;">راهکار: Remote Work + آموزش داخلی + همکاری با دانشگاه‌ها</div>
+      </div>
+      <div class="risk-card risk-low">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+          <strong>رقیب جدید ایرانی</strong>
+          <span class="badge badge-green">ریسک کم</span>
+        </div>
+        <div style="color:var(--gray); font-size:0.875rem;">راهکار: سرعت توسعه + Network Effect از Marketplace + Lock-in از بانک سوال</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== KPI ===== -->
+<section class="section" id="kpi">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">معیارهای موفقیت</span>
+      <h2 class="section-title">KPIهای کلیدی</h2>
+    </div>
+    <div class="grid-3" style="margin-bottom:2rem;">
+      <div class="card">
+        <h4 style="font-weight:700; margin-bottom:1rem; color:var(--primary);">📈 رشد کاربر</h4>
+        <div style="display:flex; flex-direction:column; gap:1rem;">
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+              <span>ماه ۶</span><span style="font-weight:600;">۱۰,۰۰۰ کاربر</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+              <span>ماه ۱۲</span><span style="font-weight:600;">۵۰,۰۰۰ کاربر</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+              <span>ماه ۱۸</span><span style="font-weight:600;">۱۰۰,۰۰۰ کاربر</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h4 style="font-weight:700; margin-bottom:1rem; color:var(--success);">💰 درآمد</h4>
+        <div style="display:flex; flex-direction:column; gap:1rem;">
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+              <span>ماه ۶</span><span style="font-weight:600;">۵۰M تومان MRR</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:10%; background:linear-gradient(90deg,var(--success),#1ABC9C)"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+              <span>ماه ۱۲</span><span style="font-weight:600;">۲۰۰M تومان MRR</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:40%; background:linear-gradient(90deg,var(--success),#1ABC9C)"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+              <span>ماه ۱۸</span><span style="font-weight:600;">۵۰۰M تومان MRR</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%; background:linear-gradient(90deg,var(--success),#1ABC9C)"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h4 style="font-weight:700; margin-bottom:1rem; color:var(--warning);">⚡ فنی</h4>
+        <div style="display:flex; flex-direction:column; gap:0.75rem;">
+          <div style="display:flex; justify-content:space-between; padding:8px; background:var(--gray-light); border-radius:8px;">
+            <span style="font-size:0.85rem;">Uptime</span>
+            <strong style="color:var(--success);">≥ ۹۹.۹٪</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:8px; background:var(--gray-light); border-radius:8px;">
+            <span style="font-size:0.85rem;">زمان پاسخ API</span>
+            <strong style="color:var(--success);">< ۲۰۰ms</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:8px; background:var(--gray-light); border-radius:8px;">
+            <span style="font-size:0.85rem;">بارگذاری صفحه</span>
+            <strong style="color:var(--success);">< ۲.۵s</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:8px; background:var(--gray-light); border-radius:8px;">
+            <span style="font-size:0.85rem;">تولید AI</span>
+            <strong style="color:var(--success);">< ۶۰s</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:8px; background:var(--gray-light); border-radius:8px;">
+            <span style="font-size:0.85rem;">NPS هدف</span>
+            <strong style="color:var(--success);">> ۵۰</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONCLUSION ===== -->
+<section class="section section-alt" id="conclusion">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">نتیجه‌گیری</span>
+      <h2 class="section-title">چرا الان؟ چرا ما؟</h2>
+    </div>
+    <div class="grid-2" style="margin-bottom:3rem;">
+      <div class="card" style="border-top:4px solid var(--primary);">
+        <h3 style="font-weight:700; margin-bottom:1.5rem;">⏰ چرا الان؟</h3>
+        <div style="display:flex; flex-direction:column; gap:1rem;">
+          <div style="display:flex; gap:12px;">
+            <span style="font-size:1.5rem;">📈</span>
+            <div><strong>بازار در اوج رشد</strong><br><span style="color:var(--gray); font-size:0.875rem;">EdTech ایران ۳۵٪ رشد سالانه دارد</span></div>
+          </div>
+          <div style="display:flex; gap:12px;">
+            <span style="font-size:1.5rem;">🏆</span>
+            <div><strong>فرصت First-Mover</strong><br><span style="color:var(--gray); font-size:0.875rem;">هیچ رقیب داخلی قوی با AI وجود ندارد</span></div>
+          </div>
+          <div style="display:flex; gap:12px;">
+            <span style="font-size:1.5rem;">🌍</span>
+            <div><strong>استانداردهای ۲۰۲۶ تازه تعریف شده</strong><br><span style="color:var(--gray); font-size:0.875rem;">AI مکالمه‌ای، Confidence Mode — فرصت پیاده‌سازی همزمان با جهان</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="border-top:4px solid var(--success);">
+        <h3 style="font-weight:700; margin-bottom:1.5rem;">💪 چرا ما؟</h3>
+        <div style="display:flex; flex-direction:column; gap:1rem;">
+          <div style="display:flex; gap:12px;">
+            <span style="font-size:1.5rem;">🎯</span>
+            <div><strong>درک عمیق بازار ایران</strong><br><span style="color:var(--gray); font-size:0.875rem;">تیم بومی با تجربه EdTech ایرانی</span></div>
+          </div>
+          <div style="display:flex; gap:12px;">
+            <span style="font-size:1.5rem;">🔬</span>
+            <div><strong>رویکرد Research-First</strong><br><span style="color:var(--gray); font-size:0.875rem;">بر اساس تحقیقات جامع آوریل ۲۰۲۶</span></div>
+          </div>
+          <div style="display:flex; gap:12px;">
+            <span style="font-size:1.5rem;">⚡</span>
+            <div><strong>معماری مقیاس‌پذیر از روز اول</strong><br><span style="color:var(--gray); font-size:0.875rem;">آماده برای ۱۰۰K+ کاربر همزمان</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Request Box -->
+    <div style="background:linear-gradient(135deg,var(--dark),var(--dark2)); border-radius:var(--radius); padding:3rem; text-align:center; color:white;">
+      <h3 style="font-size:1.5rem; font-weight:800; margin-bottom:1rem;">درخواست سرمایه‌گذاری</h3>
+      <p style="opacity:0.7; margin-bottom:2rem;">برای اجرای این پروژه نیاز داریم به:</p>
+      <div style="display:flex; justify-content:center; gap:3rem; flex-wrap:wrap; margin-bottom:2rem;">
+        <div style="text-align:center;">
+          <div style="font-size:2rem; font-weight:800; color:#A5B4FC;">۵B</div>
+          <div style="font-size:0.8rem; opacity:0.6;">سرمایه اولیه (تومان)</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:2rem; font-weight:800; color:#A5B4FC;">۱۰</div>
+          <div style="font-size:0.8rem; opacity:0.6;">نفر تیم اولیه</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:2rem; font-weight:800; color:#A5B4FC;">۳ ماه</div>
+          <div style="font-size:0.8rem; opacity:0.6;">تا راه‌اندازی Beta</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:2rem; font-weight:800; color:#A5B4FC;">۱۸ ماه</div>
+          <div style="font-size:0.8rem; opacity:0.6;">تا Break-even</div>
+        </div>
+      </div>
+      <a href="#top" class="btn btn-primary" style="font-size:1rem; padding:14px 36px;">
+        🚀 شروع پروژه
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div style="margin-bottom:0.5rem;">
+    <strong>آزمونیار</strong> — پلتفرم آزمون‌ساز آنلاین فارسی نسل بعدی
+  </div>
+  <div>پروپوزال نسخه ۱.۰ — فروردین ۱۴۰۵ (آوریل ۲۰۲۶) — بر اساس تحقیقات جامع بازار</div>
+  <div style="margin-top:0.5rem; font-size:0.75rem; opacity:0.5;">محرمانه — برای استفاده داخلی</div>
+</footer>
+
+</body>
+</html>

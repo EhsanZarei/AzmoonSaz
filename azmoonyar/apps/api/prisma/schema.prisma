@@ -1,0 +1,364 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===== ENUMS =====
+
+enum UserRole {
+  SUPER_ADMIN
+  ORG_ADMIN
+  TEACHER
+  STUDENT
+  GUEST
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+enum ExamStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+  DELETED
+}
+
+enum SubmissionStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+  DISQUALIFIED
+}
+
+enum QuestionType {
+  MCQ_SINGLE
+  MCQ_MULTIPLE
+  TRUE_FALSE
+  YES_NO
+  SHORT_ANSWER
+  ESSAY
+  FILL_BLANK
+  MATCHING
+  ORDERING
+  DRAG_DROP
+  HOTSPOT
+  LIKERT
+  STAR_RATING
+  SLIDER
+  IMAGE_CHOICE
+  VIDEO
+  AUDIO
+  FILE_UPLOAD
+  MATRIX
+  RANKING
+  CODE
+  MATH_FORMULA
+  MIND_MAP
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+  VERY_HARD
+}
+
+enum PlanType {
+  FREE
+  BASIC
+  PRO
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+  TRIAL
+}
+
+// ===== MODELS =====
+
+model User {
+  id          String     @id @default(uuid())
+  email       String?    @unique
+  phone       String?    @unique
+  name        String
+  avatarUrl   String?
+  role        UserRole   @default(STUDENT)
+  status      UserStatus @default(ACTIVE)
+  orgId       String?
+  lastLoginAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relations
+  org              Organization?    @relation(fields: [orgId], references: [id])
+  ownedExams       Exam[]           @relation("ExamOwner")
+  submissions      Submission[]
+  certificates     Certificate[]
+  srsCards         SrsCard[]
+  questionBanks    QuestionBank[]
+  gradedAnswers    Answer[]         @relation("GradedBy")
+  chatSessions     ChatSession[]
+
+  @@index([email])
+  @@index([phone])
+  @@index([orgId])
+  @@map("users")
+}
+
+model Organization {
+  id          String @id @default(uuid())
+  name        String
+  slug        String @unique
+  logoUrl     String?
+  domain      String? @unique
+  planId      String?
+  settings    Json   @default("{}")
+  status      String @default("active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  members       User[]
+  exams         Exam[]
+  questionBanks QuestionBank[]
+  subscription  Subscription?
+  workflows     Workflow[]
+
+  @@map("organizations")
+}
+
+model Plan {
+  id          String   @id @default(uuid())
+  name        String
+  type        PlanType
+  priceMonthly Int
+  priceYearly  Int
+  features    Json     @default("{}")
+  limits      Json     @default("{}")
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  subscriptions Subscription[]
+
+  @@map("plans")
+}
+
+model Subscription {
+  id        String             @id @default(uuid())
+  orgId     String             @unique
+  planId    String
+  status    SubscriptionStatus @default(ACTIVE)
+  startedAt DateTime           @default(now())
+  expiresAt DateTime
+  createdAt DateTime           @default(now())
+
+  org  Organization @relation(fields: [orgId], references: [id])
+  plan Plan         @relation(fields: [planId], references: [id])
+
+  @@map("subscriptions")
+}
+
+model Exam {
+  id          String     @id @default(uuid())
+  title       String
+  description String?
+  coverUrl    String?
+  ownerId     String
+  orgId       String?
+  status      ExamStatus @default(DRAFT)
+  settings    Json       @default("{}")
+  tags        String[]
+  category    String?
+  language    String     @default("fa")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  publishedAt DateTime?
+  expiresAt   DateTime?
+
+  owner       User         @relation("ExamOwner", fields: [ownerId], references: [id])
+  org         Organization? @relation(fields: [orgId], references: [id])
+  questions   Question[]
+  submissions Submission[]
+  certificates Certificate[]
+
+  @@index([ownerId])
+  @@index([orgId])
+  @@index([status])
+  @@map("exams")
+}
+
+model Question {
+  id            String       @id @default(uuid())
+  examId        String?
+  bankId        String?
+  type          QuestionType
+  content       Json
+  score         Float        @default(1)
+  negativeScore Float        @default(0)
+  difficulty    Difficulty   @default(MEDIUM)
+  timeLimit     Int?
+  orderIndex    Int          @default(0)
+  tags          String[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  exam     Exam?         @relation(fields: [examId], references: [id], onDelete: Cascade)
+  bank     QuestionBank? @relation(fields: [bankId], references: [id])
+  answers  Answer[]
+  srsCards SrsCard[]
+
+  @@index([examId])
+  @@index([bankId])
+  @@index([type])
+  @@map("questions")
+}
+
+model QuestionBank {
+  id          String   @id @default(uuid())
+  name        String
+  ownerId     String
+  orgId       String?
+  visibility  String   @default("private")
+  description String?
+  createdAt   DateTime @default(now())
+
+  owner     User          @relation(fields: [ownerId], references: [id])
+  org       Organization? @relation(fields: [orgId], references: [id])
+  questions Question[]
+
+  @@map("question_banks")
+}
+
+model Submission {
+  id              String           @id @default(uuid())
+  examId          String
+  userId          String?
+  guestToken      String?
+  guestName       String?
+  status          SubmissionStatus @default(IN_PROGRESS)
+  score           Float?
+  maxScore        Float?
+  percentage      Float?
+  passed          Boolean?
+  startedAt       DateTime         @default(now())
+  completedAt     DateTime?
+  timeSpent       Int?
+  ipAddress       String?
+  userAgent       String?
+  proctoringData  Json             @default("{}")
+  createdAt       DateTime         @default(now())
+
+  exam        Exam         @relation(fields: [examId], references: [id])
+  user        User?        @relation(fields: [userId], references: [id])
+  answers     Answer[]
+  certificate Certificate?
+
+  @@index([examId])
+  @@index([userId])
+  @@index([status])
+  @@map("submissions")
+}
+
+model Answer {
+  id           String   @id @default(uuid())
+  submissionId String
+  questionId   String
+  response     Json
+  score        Float?
+  isCorrect    Boolean?
+  timeSpent    Int?
+  gradedById   String?
+  gradedAt     DateTime?
+  feedback     String?
+  createdAt    DateTime @default(now())
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  question   Question   @relation(fields: [questionId], references: [id])
+  gradedBy   User?      @relation("GradedBy", fields: [gradedById], references: [id])
+
+  @@index([submissionId])
+  @@index([questionId])
+  @@map("answers")
+}
+
+model Certificate {
+  id              String    @id @default(uuid())
+  submissionId    String    @unique
+  userId          String
+  examId          String
+  templateId      String?
+  uniqueCode      String    @unique
+  blockchainHash  String?
+  vcDocument      Json?
+  issuedAt        DateTime  @default(now())
+  expiresAt       DateTime?
+  revokedAt       DateTime?
+  downloadCount   Int       @default(0)
+
+  submission Submission @relation(fields: [submissionId], references: [id])
+  user       User       @relation(fields: [userId], references: [id])
+  exam       Exam       @relation(fields: [examId], references: [id])
+
+  @@index([userId])
+  @@index([uniqueCode])
+  @@map("certificates")
+}
+
+model SrsCard {
+  id           String   @id @default(uuid())
+  userId       String
+  questionId   String
+  easeFactor   Float    @default(2.5)
+  intervalDays Int      @default(1)
+  repetitions  Int      @default(0)
+  nextReview   DateTime @default(now())
+  lastReview   DateTime?
+  createdAt    DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id])
+
+  @@unique([userId, questionId])
+  @@index([userId, nextReview])
+  @@map("srs_cards")
+}
+
+model Workflow {
+  id        String   @id @default(uuid())
+  orgId     String
+  ownerId   String
+  name      String
+  trigger   String
+  conditions Json    @default("[]")
+  actions   Json
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  org Organization @relation(fields: [orgId], references: [id])
+
+  @@map("workflows")
+}
+
+model ChatSession {
+  id        String   @id @default(uuid())
+  userId    String
+  examId    String?
+  history   Json     @default("[]")
+  context   Json     @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("chat_sessions")
+}
