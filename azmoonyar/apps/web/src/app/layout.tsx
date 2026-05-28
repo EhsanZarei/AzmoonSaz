@@ -1,8 +1,15 @@
 import type { Metadata } from 'next';
+import { Vazirmatn } from 'next/font/google';
 import { Toaster } from 'sonner';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { QueryProvider } from '@/components/providers/query-provider';
 import './globals.css';
+
+const vazirmatn = Vazirmatn({
+  subsets: ['arabic', 'latin'],
+  display: 'swap',
+  variable: '--font-vazirmatn',
+});
 
 export const metadata: Metadata = {
   title: {
@@ -27,8 +34,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fa" dir="rtl" suppressHydrationWarning>
-      <body>
+    <html lang="fa" dir="rtl" suppressHydrationWarning className={`${vazirmatn.variable} font-sans`}>
+      <body className="antialiased min-h-screen bg-background text-foreground">
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
@@ -42,7 +49,7 @@ export default function RootLayout({
               richColors
               dir="rtl"
               toastOptions={{
-                style: { fontFamily: 'Vazirmatn, Tahoma, sans-serif' },
+                style: { fontFamily: 'var(--font-vazirmatn), Tahoma, sans-serif' },
               }}
             />
           </QueryProvider>
