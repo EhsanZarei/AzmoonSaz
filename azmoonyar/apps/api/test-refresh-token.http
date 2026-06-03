@@ -1,0 +1,170 @@
+### Refresh Token Rotation - Manual Test Script
+### Use with REST Client extension in VSCode or similar HTTP client
+
+@baseUrl = http://localhost:4000
+@phone = 09123456789
+
+### 1. Send OTP
+# @name sendOtp
+POST {{baseUrl}}/auth/send-otp
+Content-Type: application/json
+
+{
+  "phone": "{{phone}}"
+}
+
+###
+
+### 2. Verify OTP (check console for OTP in development mode)
+# @name verifyOtp
+POST {{baseUrl}}/auth/verify-otp
+Content-Type: application/json
+
+{
+  "token": "{{sendOtp.response.body.token}}",
+  "otp": "123456"
+}
+
+###
+
+@accessToken = {{verifyOtp.response.body.accessToken}}
+@refreshToken = {{verifyOtp.response.body.refreshToken}}
+
+### 3. Use Access Token (should work)
+GET {{baseUrl}}/auth/sessions
+Authorization: Bearer {{accessToken}}
+
+###
+
+### 4. Refresh Token (Token Rotation Test)
+# @name refresh1
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+###
+
+@newAccessToken = {{refresh1.response.body.accessToken}}
+@newRefreshToken = {{refresh1.response.body.refreshToken}}
+
+### 5. Use Old Refresh Token (should fail - token reuse detection)
+# This should return error: "تشخیص استفاده مجدد از توکن"
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+###
+
+### 6. Use New Refresh Token (should work)
+# @name refresh2
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{newRefreshToken}}"
+}
+
+###
+
+### 7. View Active Sessions
+GET {{baseUrl}}/auth/sessions
+Authorization: Bearer {{refresh2.response.body.accessToken}}
+
+###
+
+### 8. Logout from Current Device
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{refresh2.response.body.accessToken}}
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refresh2.response.body.refreshToken}}"
+}
+
+###
+
+### 9. Try to use revoked token (should fail)
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refresh2.response.body.refreshToken}}"
+}
+
+###
+
+### 10. Login again and test logout-all
+# @name verifyOtp2
+POST {{baseUrl}}/auth/verify-otp
+Content-Type: application/json
+
+{
+  "token": "{{sendOtp.response.body.token}}",
+  "otp": "123456"
+}
+
+###
+
+### 11. Create multiple sessions (refresh multiple times)
+# @name refresh3
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{verifyOtp2.response.body.refreshToken}}"
+}
+
+###
+
+# @name refresh4
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refresh3.response.body.refreshToken}}"
+}
+
+###
+
+### 12. View all active sessions
+GET {{baseUrl}}/auth/sessions
+Authorization: Bearer {{refresh4.response.body.accessToken}}
+
+###
+
+### 13. Logout from ALL devices
+POST {{baseUrl}}/auth/logout-all
+Authorization: Bearer {{refresh4.response.body.accessToken}}
+
+###
+
+### 14. Try to use any token after logout-all (should fail)
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refresh4.response.body.refreshToken}}"
+}
+
+###
+
+### Test Results Expected:
+###
+### ✅ Step 1-2: Successful OTP flow
+### ✅ Step 3: Access token works
+### ✅ Step 4: Refresh token rotates successfully
+### ❌ Step 5: Old token reuse detected, all tokens revoked
+### ✅ Step 6: New token works (after generating new session)
+### ✅ Step 7: Active sessions visible
+### ✅ Step 8: Logout from current device
+### ❌ Step 9: Revoked token rejected
+### ✅ Step 10-11: Multiple refreshes create token chain
+### ✅ Step 12: All sessions visible
+### ✅ Step 13: All tokens revoked
+### ❌ Step 14: All tokens invalid after logout-all

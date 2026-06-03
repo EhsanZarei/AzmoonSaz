@@ -14,15 +14,42 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
     "db:migrate": "turbo run db:migrate --filter=api",
-    "db:seed": "turbo run db:seed --filter=api"
+    "db:seed": "turbo run db:seed --filter=api",
+    "prepare": "husky"
   },
   "devDependencies": {
-    "turbo": "^2.0.0",
+    "@types/jest": "^30.0.0",
+    "husky": "9.0.11",
+    "jest": "^30.4.2",
+    "jest-circus": "^30.4.2",
+    "lint-staged": "15.2.2",
     "prettier": "^3.2.0",
+    "resolve-from": "^5.0.0",
+    "ts-jest": "^29.4.11",
+    "turbo": "^2.0.0",
     "typescript": "^5.4.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{js,jsx,mjs}": [
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ],
+    "*.py": [
+      "python -m black",
+      "python -m isort"
+    ]
   },
   "engines": {
     "node": ">=20.0.0",
     "npm": ">=10.0.0"
+  },
+  "dependencies": {
+    "hasown": "^2.0.4"
   }
 }

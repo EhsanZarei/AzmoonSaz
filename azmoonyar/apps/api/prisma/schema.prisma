@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -90,17 +91,20 @@ model User {
   id          String     @id @default(uuid())
   email       String?    @unique
   phone       String?    @unique
+  password    String?
+  googleId    String?    @unique
   name        String
   avatarUrl   String?
   role        UserRole   @default(STUDENT)
   status      UserStatus @default(ACTIVE)
   orgId       String?
+  metadata    Json       @default("{}")
   lastLoginAt DateTime?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
   // Relations
-  org              Organization?    @relation(fields: [orgId], references: [id])
+  org              Organization?    @relation("UserOrganization", fields: [orgId], references: [id])
   ownedExams       Exam[]           @relation("ExamOwner")
   submissions      Submission[]
   certificates     Certificate[]
@@ -108,10 +112,15 @@ model User {
   questionBanks    QuestionBank[]
   gradedAnswers    Answer[]         @relation("GradedBy")
   chatSessions     ChatSession[]
+  sentInvitations  Invitation[]
 
   @@index([email])
   @@index([phone])
+  @@index([googleId])
   @@index([orgId])
+  @@index([status])
+  @@index([role])
+  @@index([createdAt])
   @@map("users")
 }
 
@@ -128,12 +137,17 @@ model Organization {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  members       User[]
+  members       User[]        @relation("UserOrganization")
   exams         Exam[]
   questionBanks QuestionBank[]
   subscription  Subscription?
   workflows     Workflow[]
+  invitations   Invitation[]
 
+  @@index([slug])
+  @@index([status])
+  @@index([createdAt])
+  @@index([name]) // For searching organizations by name
   @@map("organizations")
 }
 
@@ -194,6 +208,15 @@ model Exam {
   @@index([ownerId])
   @@index([orgId])
   @@index([status])
+  @@index([title]) // Already exists for title search
+  @@index([tags])
+  @@index([publishedAt])
+  @@index([expiresAt])
+  @@index([createdAt])
+  @@index([category]) // For filtering by category
+  @@index([status, publishedAt]) // Composite for published exams with dates
+  @@index([orgId, status]) // Composite for organization's exams by status
+  @@index([ownerId, status]) // Composite for owner's exams by status
   @@map("exams")
 }
 
@@ -220,6 +243,12 @@ model Question {
   @@index([examId])
   @@index([bankId])
   @@index([type])
+  @@index([tags])
+  @@index([difficulty])
+  @@index([createdAt])
+  @@index([examId, orderIndex]) // Composite for ordered questions in exam
+  @@index([bankId, type]) // Composite for filtering questions by type in bank
+  @@index([type, difficulty]) // Composite for filtering by type and difficulty
   @@map("questions")
 }
 
@@ -236,6 +265,13 @@ model QuestionBank {
   org       Organization? @relation(fields: [orgId], references: [id])
   questions Question[]
 
+  @@index([ownerId])
+  @@index([orgId])
+  @@index([visibility])
+  @@index([createdAt])
+  @@index([name]) // For searching question banks by name
+  @@index([ownerId, visibility]) // Composite for owner's banks by visibility
+  @@index([orgId, visibility]) // Composite for org's banks by visibility
   @@map("question_banks")
 }
 
@@ -266,6 +302,13 @@ model Submission {
   @@index([examId])
   @@index([userId])
   @@index([status])
+  @@index([startedAt])
+  @@index([completedAt])
+  @@index([createdAt])
+  @@index([examId, status]) // Composite for exam submissions by status
+  @@index([userId, status]) // Composite for user submissions by status
+  @@index([examId, completedAt]) // Composite for completed exams with dates
+  @@index([passed]) // For filtering by pass/fail status
   @@map("submissions")
 }
 
@@ -288,6 +331,10 @@ model Answer {
 
   @@index([submissionId])
   @@index([questionId])
+  @@index([isCorrect])
+  @@index([gradedById])
+  @@index([submissionId, questionId]) // Composite for answers in submission
+  @@index([questionId, isCorrect]) // Composite for question performance analysis
   @@map("answers")
 }
 
@@ -311,6 +358,11 @@ model Certificate {
 
   @@index([userId])
   @@index([uniqueCode])
+  @@index([examId])
+  @@index([issuedAt])
+  @@index([expiresAt]) // For filtering expired certificates
+  @@index([revokedAt]) // For filtering revoked certificates
+  @@index([userId, issuedAt]) // Composite for user certificates by date
   @@map("certificates")
 }
 
@@ -361,4 +413,37 @@ model ChatSession {
   user User @relation(fields: [userId], references: [id])
 
   @@map("chat_sessions")
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
+}
+
+model Invitation {
+  id         String           @id @default(uuid())
+  email      String
+  orgId      String
+  invitedBy  String
+  role       UserRole         @default(STUDENT)
+  token      String           @unique
+  status     InvitationStatus @default(PENDING)
+  expiresAt  DateTime
+  acceptedAt DateTime?
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  inviter      User         @relation(fields: [invitedBy], references: [id])
+
+  @@index([email])
+  @@index([orgId])
+  @@index([token])
+  @@index([status])
+  @@index([expiresAt])
+  @@index([orgId, status]) // Composite for org's invitations by status
+  @@index([email, status]) // Composite for checking existing invitations
+  @@map("invitations")
 }

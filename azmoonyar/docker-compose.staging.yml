@@ -1,0 +1,156 @@
+version: '3.9'
+
+services:
+  # ===== Nginx Reverse Proxy =====
+  nginx:
+    image: nginx:alpine
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./nginx/nginx.staging.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - certbot_data:/var/www/certbot:ro
+    depends_on:
+      - web
+      - api
+    restart: unless-stopped
+    networks:
+      - azmoonyar-staging-net
+
+  # ===== Frontend =====
+  web:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_PREFIX:-azmoonyar}-web:main
+    environment:
+      - NODE_ENV=staging
+      - NEXT_PUBLIC_API_URL=https://staging-api.azmoonai.ir
+      - NEXT_PUBLIC_WS_URL=wss://staging-api.azmoonai.ir
+      - NEXT_PUBLIC_APP_URL=https://staging.azmoonai.ir
+    restart: unless-stopped
+    networks:
+      - azmoonyar-staging-net
+
+  # ===== Backend API =====
+  api:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_PREFIX:-azmoonyar}-api:main
+    environment:
+      - NODE_ENV=staging
+      - PORT=4000
+      - DATABASE_URL=postgresql://azmoonyar:${DB_PASSWORD}@postgres:5432/azmoonyar_staging
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      - MINIO_ENDPOINT=minio
+      - MINIO_PORT=9000
+      - MINIO_USE_SSL=false
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_BUCKET=azmoonyar-staging
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+      - JWT_EXPIRES_IN=15m
+      - AI_SERVICE_URL=http://ai-service:8000
+      - FRONTEND_URL=https://staging.azmoonai.ir
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - APP_URL=https://staging-api.azmoonai.ir
+      - KAVENEGAR_API_KEY=${KAVENEGAR_API_KEY}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - SENTRY_ENVIRONMENT=staging
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - azmoonyar-staging-net
+
+  # ===== AI Service =====
+  ai-service:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_PREFIX:-azmoonyar}-ai:main
+    environment:
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - API_URL=http://api:4000
+      - ENVIRONMENT=staging
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - azmoonyar-staging-net
+
+  # ===== PostgreSQL =====
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_DB=azmoonyar_staging
+      - POSTGRES_USER=azmoonyar
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres_staging_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U azmoonyar -d azmoonyar_staging']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - azmoonyar-staging-net
+
+  # ===== Redis =====
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_staging_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', '-a', '${REDIS_PASSWORD}', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - azmoonyar-staging-net
+
+  # ===== MinIO =====
+  minio:
+    image: minio/minio:latest
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
+    command: server /data --console-address ':9001'
+    volumes:
+      - minio_staging_data:/data
+    restart: unless-stopped
+    networks:
+      - azmoonyar-staging-net
+
+  # ===== Elasticsearch (optional for staging) =====
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    volumes:
+      - elasticsearch_staging_data:/usr/share/elasticsearch/data
+    restart: unless-stopped
+    networks:
+      - azmoonyar-staging-net
+
+volumes:
+  postgres_staging_data:
+  redis_staging_data:
+  minio_staging_data:
+  elasticsearch_staging_data:
+  certbot_data:
+
+networks:
+  azmoonyar-staging-net:
+    driver: bridge

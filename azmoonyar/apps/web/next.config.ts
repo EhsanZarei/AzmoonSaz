@@ -1,9 +1,12 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  // تنظیمات خروجی برای Docker
+  output: 'standalone',
+
   // فعال‌سازی App Router
   experimental: {
-    typedRoutes: true,
+    typedRoutes: false,
   },
 
   // تنظیمات تصویر

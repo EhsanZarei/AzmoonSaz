@@ -5,13 +5,9 @@ services:
   web:
     build:
       context: ./apps/web
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     ports:
       - '3000:3000'
-    volumes:
-      - ./apps/web:/app
-      - /app/node_modules
-      - /app/.next
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:4000
       - NEXT_PUBLIC_WS_URL=ws://localhost:4000
@@ -24,7 +20,7 @@ services:
   api:
     build:
       context: ./apps/api
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     ports:
       - '4000:4000'
     volumes:
@@ -61,7 +57,7 @@ services:
   ai-service:
     build:
       context: ./apps/ai-service
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     ports:
       - '8000:8000'
     volumes:
@@ -130,7 +126,7 @@ services:
     networks:
       - azmoonyar-net
 
-  # ===== MinIO Setup (ایجاد bucket اولیه) =====
+  # ===== MinIO Setup (ایجاد bucket‌های اولیه) =====
   minio-setup:
     image: minio/mc:latest
     depends_on:
@@ -139,10 +135,18 @@ services:
       /bin/sh -c "
       sleep 5;
       mc alias set local http://minio:9000 minioadmin minioadmin;
+
       mc mb local/azmoonyar --ignore-existing;
       mc mb local/azmoonyar-temp --ignore-existing;
+      mc mb local/azmoonyar-certificates --ignore-existing;
+      mc mb local/azmoonyar-avatars --ignore-existing;
+      mc mb local/azmoonyar-exam-media --ignore-existing;
+
       mc anonymous set public local/azmoonyar/public;
-      echo 'MinIO setup complete';
+      mc anonymous set public local/azmoonyar-avatars;
+      mc anonymous set public local/azmoonyar-exam-media;
+
+      echo 'MinIO setup complete — all buckets created';
       "
     networks:
       - azmoonyar-net
@@ -158,6 +162,26 @@ services:
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
     volumes:
       - es_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -s http://localhost:9200/_cluster/health | grep -q "green\|yellow"']
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    networks:
+      - azmoonyar-net
+
+  # ===== Elasticsearch Setup (mapping فارسی) =====
+  es-setup:
+    image: curlimages/curl:latest
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    volumes:
+      - ./scripts/init-elasticsearch.sh:/init-elasticsearch.sh
+    entrypoint: >
+      /bin/sh -c "
+      ELASTICSEARCH_URL=http://elasticsearch:9200 sh /init-elasticsearch.sh
+      "
     networks:
       - azmoonyar-net
 

@@ -1,5 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRedis } from '../../redis/redis.decorator';
+import { Injectable, Logger, Inject } from '@nestjs/common';
+import { REDIS_CLIENT } from '../../redis/redis.module';
 import Redis from 'ioredis';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ScoringService } from '../submissions/scoring.service';
@@ -22,7 +22,7 @@ export class LiveQuizService {
   private readonly logger = new Logger(LiveQuizService.name);
 
   constructor(
-    @InjectRedis() private redis: Redis,
+    @Inject(REDIS_CLIENT) private redis: Redis,
     private prisma: PrismaService,
     private scoring: ScoringService,
   ) {}

@@ -1,0 +1,160 @@
+name: Deploy to Staging (Liara VPS)
+
+on:
+  workflow_run:
+    workflows: ["Build & Push Docker Images"]
+    types:
+      - completed
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      force_deploy:
+        description: 'Force deploy even if no changes'
+        required: false
+        default: 'false'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ${{ github.repository_owner }}/azmoonyar
+
+jobs:
+  deploy-staging:
+    name: Deploy to Staging Environment
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    environment:
+      name: staging
+      url: https://staging.azmoonai.ir
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.STAGING_SSH_KEY }}" > ~/.ssh/staging_key
+          chmod 600 ~/.ssh/staging_key
+          ssh-keyscan -H ${{ secrets.STAGING_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Test SSH connection
+        run: |
+          ssh -i ~/.ssh/staging_key -o StrictHostKeyChecking=no \
+            ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }} \
+            "echo '✅ SSH connection successful'"
+
+      - name: Pull latest Docker images on staging server
+        run: |
+          ssh -i ~/.ssh/staging_key \
+            ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }} << 'EOF'
+            echo "🐳 Pulling latest Docker images..."
+            
+            # Login to GitHub Container Registry
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            
+            # Pull latest images
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}-api:main || true
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}-web:main || true
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}-ai:main || true
+            
+            echo "✅ Images pulled successfully"
+          EOF
+
+      - name: Deploy to staging server
+        run: |
+          ssh -i ~/.ssh/staging_key \
+            ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }} << 'EOF'
+            set -e
+            
+            echo "📂 Navigating to project directory..."
+            cd /var/www/azmoonyar-staging
+            
+            echo "📥 Pulling latest code..."
+            git fetch origin
+            git reset --hard origin/main
+            
+            echo "🔄 Stopping old containers..."
+            docker compose -f docker-compose.staging.yml down || true
+            
+            echo "🚀 Starting new containers..."
+            docker compose -f docker-compose.staging.yml up -d
+            
+            echo "⏳ Waiting for services to be ready..."
+            sleep 15
+            
+            echo "🗄️ Running database migrations..."
+            docker compose -f docker-compose.staging.yml exec -T api npx prisma migrate deploy || echo "⚠️ Migration failed or already applied"
+            
+            echo "🧹 Cleaning up old images..."
+            docker image prune -f
+            
+            echo "✅ Deployment completed successfully!"
+          EOF
+
+      - name: Health check
+        run: |
+          echo "🏥 Running health checks..."
+          
+          # Wait for services to stabilize
+          sleep 10
+          
+          # Check API health
+          API_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://staging-api.azmoonai.ir/health || echo "000")
+          if [ "$API_STATUS" = "200" ]; then
+            echo "✅ API is healthy (HTTP $API_STATUS)"
+          else
+            echo "❌ API health check failed (HTTP $API_STATUS)"
+            exit 1
+          fi
+          
+          # Check Web health
+          WEB_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://staging.azmoonai.ir || echo "000")
+          if [ "$WEB_STATUS" = "200" ]; then
+            echo "✅ Web is healthy (HTTP $WEB_STATUS)"
+          else
+            echo "⚠️ Web health check returned HTTP $WEB_STATUS"
+          fi
+
+      - name: Get deployment logs
+        if: always()
+        run: |
+          ssh -i ~/.ssh/staging_key \
+            ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }} << 'EOF'
+            cd /var/www/azmoonyar-staging
+            echo "📋 Last 50 lines of logs:"
+            docker compose -f docker-compose.staging.yml logs --tail=50
+          EOF
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✅ Staging deployment successful!"
+            echo "🌐 Staging URL: https://staging.azmoonai.ir"
+            echo "🔌 API URL: https://staging-api.azmoonai.ir"
+          else
+            echo "❌ Staging deployment failed!"
+            echo "Check logs above for details"
+          fi
+
+      - name: Create deployment summary
+        if: always()
+        run: |
+          echo "## 🚀 Staging Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Item | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Deployment | ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | staging |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branch | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 Links" >> $GITHUB_STEP_SUMMARY
+          echo "- 🌐 Web: https://staging.azmoonai.ir" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔌 API: https://staging-api.azmoonai.ir" >> $GITHUB_STEP_SUMMARY
+          echo "- 📊 API Health: https://staging-api.azmoonai.ir/health" >> $GITHUB_STEP_SUMMARY
+
+      - name: Cleanup SSH key
+        if: always()
+        run: |
+          rm -f ~/.ssh/staging_key

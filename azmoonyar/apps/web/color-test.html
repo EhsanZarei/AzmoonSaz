@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تست رنگ‌بندی - آزمونیار</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#3B82F6',
+                            500: '#3B82F6',
+                        },
+                        secondary: {
+                            DEFAULT: '#6B7280',
+                            500: '#6B7280',
+                        },
+                        accent: {
+                            DEFAULT: '#10B981',
+                            500: '#10B981',
+                        },
+                        success: {
+                            DEFAULT: '#10B981',
+                            500: '#10B981',
+                        },
+                        warning: {
+                            DEFAULT: '#F59E0B',
+                            500: '#F59E0B',
+                        },
+                        error: {
+                            DEFAULT: '#EF4444',
+                            500: '#EF4444',
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Vazirmatn', Tahoma, Arial, sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8 text-center">تست رنگ‌بندی اصلی آزمونیار</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Primary Color -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="w-full h-24 bg-primary rounded-md mb-4"></div>
+                <h3 class="text-lg font-semibold mb-2">Primary (آبی)</h3>
+                <p class="text-sm text-gray-600 mb-2">#3B82F6</p>
+                <button class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary/90 transition">
+                    دکمه نمونه
+                </button>
+            </div>
+
+            <!-- Secondary Color -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="w-full h-24 bg-secondary rounded-md mb-4"></div>
+                <h3 class="text-lg font-semibold mb-2">Secondary (خاکستری)</h3>
+                <p class="text-sm text-gray-600 mb-2">#6B7280</p>
+                <button class="w-full bg-secondary text-white py-2 px-4 rounded-md hover:bg-secondary/90 transition">
+                    دکمه نمونه
+                </button>
+            </div>
+
+            <!-- Accent Color -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="w-full h-24 bg-accent rounded-md mb-4"></div>
+                <h3 class="text-lg font-semibold mb-2">Accent (سبز)</h3>
+                <p class="text-sm text-gray-600 mb-2">#10B981</p>
+                <button class="w-full bg-accent text-white py-2 px-4 rounded-md hover:bg-accent/90 transition">
+                    دکمه نمونه
+                </button>
+            </div>
+
+            <!-- Success Color -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="w-full h-24 bg-success rounded-md mb-4"></div>
+                <h3 class="text-lg font-semibold mb-2">Success (موفقیت)</h3>
+                <p class="text-sm text-gray-600 mb-2">#10B981</p>
+                <div class="w-full bg-success/10 border border-success text-success py-2 px-4 rounded-md text-center">
+                    پیام موفقیت
+                </div>
+            </div>
+
+            <!-- Warning Color -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="w-full h-24 bg-warning rounded-md mb-4"></div>
+                <h3 class="text-lg font-semibold mb-2">Warning (هشدار)</h3>
+                <p class="text-sm text-gray-600 mb-2">#F59E0B</p>
+                <div class="w-full bg-warning/10 border border-warning text-warning py-2 px-4 rounded-md text-center">
+                    پیام هشدار
+                </div>
+            </div>
+
+            <!-- Error Color -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="w-full h-24 bg-error rounded-md mb-4"></div>
+                <h3 class="text-lg font-semibold mb-2">Error (خطا)</h3>
+                <p class="text-sm text-gray-600 mb-2">#EF4444</p>
+                <div class="w-full bg-error/10 border border-error text-error py-2 px-4 rounded-md text-center">
+                    پیام خطا
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage Examples -->
+        <div class="mt-12 bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-6">نمونه‌های استفاده</h2>
+            
+            <div class="space-y-4">
+                <div class="flex items-center gap-4">
+                    <button class="bg-primary text-white py-2 px-6 rounded-md hover:bg-primary/90 transition">
+                        دکمه اصلی
+                    </button>
+                    <button class="bg-secondary text-white py-2 px-6 rounded-md hover:bg-secondary/90 transition">
+                        دکمه ثانویه
+                    </button>
+                    <button class="bg-accent text-white py-2 px-6 rounded-md hover:bg-accent/90 transition">
+                        دکمه تاکیدی
+                    </button>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="bg-success/10 border-r-4 border-success text-success p-4 rounded">
+                        ✓ عملیات با موفقیت انجام شد
+                    </div>
+                    <div class="bg-warning/10 border-r-4 border-warning text-warning p-4 rounded">
+                        ⚠ توجه: این عملیات قابل بازگشت نیست
+                    </div>
+                    <div class="bg-error/10 border-r-4 border-error text-error p-4 rounded">
+                        ✕ خطا: لطفا دوباره تلاش کنید
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 text-center text-sm text-gray-500">
+            <p>این فایل برای تست رنگ‌بندی ایجاد شده است و می‌توان آن را حذف کرد.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -8,8 +8,28 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
+# TypeScript / JavaScript
+[*.{ts,tsx,js,jsx,mjs,cjs}]
+indent_size = 2
+quote_type = single
+
+# JSON / JSONC
+[*.{json,jsonc}]
+indent_size = 2
+
+# YAML
+[*.{yml,yaml}]
+indent_size = 2
+
+# Python (PEP 8)
+[*.py]
+indent_size = 4
+max_line_length = 88
+
+# Markdown — preserve trailing spaces (used for line breaks)
 [*.md]
 trim_trailing_whitespace = false
 
-[*.py]
-indent_size = 4
+# Prisma schema
+[*.prisma]
+indent_size = 2
